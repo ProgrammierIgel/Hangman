@@ -22,7 +22,7 @@ class Hangman:
          - um zu spielen: 'play'
          - Wörter bearbeiten: 'edit'
          
-         PLAY: Man hat 11 Versuche. Bitte gib das Wort oder einzelne Buchstaben ein. Keine Wortgruppe!
+         PLAY: Man hat 11 Versuche. Bitte gib das Wort oder einzelne oder Wortgruppen Buchstaben ein.
          Eingaben werden in Großbuch umgewandelt!
          um den Spielmodus zu beenden :'/exit'
          
@@ -135,14 +135,11 @@ class Hangman:
                         print("SUPER! Du hast deinen Highscore geknackt! Highscore: {}".format(self.highscore))
 
                     break
-                elif len(entry)>1:
-                    print("Bitte nur Buchstaben oder das ganze Wort!")
-                    continue
                 elif entry in geraten:
                     print("Eingabe schon vorhanden!")
                     continue
                 geraten.append(entry)
-                if entry in word:
+                if not word.find(entry) == -1:
                     print("super!")
                 else:
                     print("Leider Falsch!")
