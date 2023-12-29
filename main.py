@@ -102,7 +102,7 @@ class Hangman:
                     break
 
                 print()
-                entry = input("Bitte gib einen Buchstaben oder das Wort ein. Zu Abbrechen '/exit'! Hilfe: '/help'  Score: '/score' Highscore: '/highscore' \n").upper()
+                entry = input("Bitte gib einen Buchstaben oder das Wort ein. Zu Abbrechen '/exit'! Hilfe: '/help'  Score: '/score' Highscore: '/highscore' \n").upper().replace("AE","Ä").replace("OE","Ö").replace("UE","Ü")
                 if entry.startswith("/EXIT"):
                     self.clear_terminal()
                     run = False
@@ -140,7 +140,18 @@ class Hangman:
                     continue
                 geraten.append(entry)
                 if not word.find(entry) == -1:
-                    print("super!")
+                    always_exists = 0
+                    for letter in entry:
+                        if letter in geraten:
+                            always_exists += 1
+                            continue
+                        else:
+                            geraten.append(letter)
+
+                    if always_exists >= len(entry):
+                        print("Eingabe schon vorhanden")
+                    else:
+                        print("Super")
                 else:
                     print("Leider Falsch!")
                     Fehler+=1
