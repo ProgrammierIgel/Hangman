@@ -1,12 +1,12 @@
 
-class Add:
+class Words:
     def __init__(self, main):
         self.words = []
         self.read()
         self.main = main
 
     def add(self, word):
-        with open("./words.txt", "a") as file:
+        with open("words.txt", "a") as file:
 
             file.write("{}\n".format(word.replace(" ","")))
             file.close()
@@ -14,7 +14,7 @@ class Add:
 
     def read(self):
         self.words = []
-        with open("./words.txt", "r") as file:
+        with open("words.txt", "r") as file:
 
             for line in file.readlines():
                 word = line.replace("\n", "").upper()
@@ -80,6 +80,6 @@ class Add:
                 continue
 
     def update(self):
-        with open("./words.txt", "w") as file:
+        with open("words.txt", "w") as file:
             for i in self.words:
                 file.write("{}\n".format(i.replace(" ", "")))

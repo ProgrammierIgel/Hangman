@@ -1,18 +1,35 @@
-import json
 import random
-import Add
 import Fehler
+import json
+import keyboard
+import os
+import sys
+import time
+from Words import Words
+
+
+async def keys(cancel):
+    while not cancel:
+        if keyboard.wait("<Right>"):
+            print("runter")
+        time.sleep(0.1)
 
 
 class Hangman:
     def __init__(self):
-        self.Add = Add.Add(self)
+        self.Add = Words(self)
         self.words = self.Add.words
-        self.highscore = json.loads(open("./highscore.json").read())['highscore']
-
-
-
+        self.highscore = json.loads(open("highscore.json").read())['highscore']
+        self.main_menu()
         self.waiting_for_command()
+
+    def main_menu(self):
+        cancel = True
+        keys(True)
+        time.sleep(10)
+        cancel= False
+        sys.stdout.write("\r{0}>".format("="))
+        sys.stdout.flush()
 
     def print_help(self):
         print("""HILFE FÜR USER:
@@ -93,10 +110,10 @@ class Hangman:
                     score +=1
                     if score >= self.highscore:
                         self.highscore = score
-                        with open('./highscore.json') as f:
+                        with open('highscore.json') as f:
                             data = json.load(f)
                         data["highscore"] = self.highscore
-                        with open('./highscore.json', 'w') as outfile:
+                        with open('highscore.json', 'w') as outfile:
                             json.dump(data, outfile)
                         print("SUPER! Du hast deinen Highscore geknackt! Highscore: {}".format(self.highscore))
                     break
@@ -126,10 +143,10 @@ class Hangman:
                     score =score+1
                     if score >= self.highscore:
                         self.highscore = score
-                        with open('./highscore.json') as f:
+                        with open('highscore.json') as f:
                             data = json.load(f)
                         data["highscore"] = self.highscore
-                        with open('./highscore.json', 'w') as outfile:
+                        with open('highscore.json', 'w') as outfile:
                             json.dump(data, outfile)
 
                         print("SUPER! Du hast deinen Highscore geknackt! Highscore: {}".format(self.highscore))
@@ -196,10 +213,9 @@ class Hangman:
             """)
 
     def clear_terminal(self):
-        for x in range(9):
-            print()
-
+        os.system('cls' if os.name == 'nt' else 'clear')
 
 
 if __name__ == "__main__":
     Hangman()
+
