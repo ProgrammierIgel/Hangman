@@ -1,11 +1,11 @@
-import random
-import Fehler
 import json
+import mistake
 import keyboard
 import os
+import random
 import sys
 import time
-from Words import Words
+from words import Words
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -160,7 +160,7 @@ class Hangman:
                 else:
                     print("Leider Falsch!")
                     Fehler+=1
-                    self.print_misstake(Fehler)
+                    self.print_mistake(Fehler)
                     if Fehler >= 11:
                         print("GAME OVER")
                         print("Du wurdest gehängt")
@@ -169,29 +169,29 @@ class Hangman:
 
 
 
-    def print_misstake(self, misstake):
+    def print_mistake(self, misstake):
         if misstake == 1:
-            print(Fehler.eins)
+            print(mistake.eins)
         elif misstake ==2:
-            print(Fehler.zwei)
+            print(mistake.zwei)
         elif misstake == 3:
-            print(Fehler.drei)
+            print(mistake.drei)
         elif misstake == 4:
-            print(Fehler.vier)
+            print(mistake.vier)
         elif misstake == 5:
-            print(Fehler.fünf)
+            print(mistake.fünf)
         elif misstake == 6:
-            print(Fehler.sechs)
+            print(mistake.sechs)
         elif misstake == 7:
-            print(Fehler.sieben)
+            print(mistake.sieben)
         elif misstake == 8:
-            print(Fehler.acht)
+            print(mistake.acht)
         elif misstake == 9:
-            print(Fehler.neun)
+            print(mistake.neun)
         elif misstake == 10:
-            print(Fehler.zehn)
+            print(mistake.zehn)
         elif misstake == 11:
-            print(Fehler.elf)
+            print(mistake.elf)
         elif misstake == 0:
             print("""
 
