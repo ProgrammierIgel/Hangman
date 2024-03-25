@@ -7,29 +7,17 @@ import sys
 import time
 from Words import Words
 
-
-async def keys(cancel):
-    while not cancel:
-        if keyboard.wait("<Right>"):
-            print("runter")
-        time.sleep(0.1)
+path = os.path.dirname(os.path.realpath(__file__))
 
 
 class Hangman:
     def __init__(self):
         self.Add = Words(self)
         self.words = self.Add.words
-        self.highscore = json.loads(open("highscore.json").read())['highscore']
+        self.highscore = json.loads(open(f"{path}\\highscore.json").read())['highscore']
         self.main_menu()
         self.waiting_for_command()
 
-    def main_menu(self):
-        cancel = True
-        keys(True)
-        time.sleep(10)
-        cancel= False
-        sys.stdout.write("\r{0}>".format("="))
-        sys.stdout.flush()
 
     def print_help(self):
         print("""HILFE FÜR USER:
@@ -38,26 +26,26 @@ class Hangman:
          - um Wörter hinzuzufügen: 'add'
          - um zu spielen: 'play'
          - Wörter bearbeiten: 'edit'
-         
+
          PLAY: Man hat 11 Versuche. Bitte gib das Wort oder einzelne oder Wortgruppen Buchstaben ein.
          Eingaben werden in Großbuch umgewandelt!
          um den Spielmodus zu beenden :'/exit'
-         
+
          ADD: Modus um Wörter hinzuzufügen.
          Wörter werden automatisch in Wörter, verwandelt bei denen alle Buchstaben groß geschrieben sind!
          Hinzufügenmodus beenden mit: '/exit'.
-         
+
          EDIT: Gib die Nummer des Wortes ein welches du bearbeiten möchtest.
          Die Wörter, welche zur Auwahl stehen werden dir angezeigt.
          Gib nun das korigierte Wort ein. Bestätige nun deine Eingabe mit einem Ja!
-         Um den Bearbeitungsmodus zu verlassen gib bitte '/exit' ein!. 
-         
-         OVERVIEW: Zeigt alle vorhnadenen Wörter. 
-         
-         EXIT: Beendet das Programm.  
-         
+         Um den Bearbeitungsmodus zu verlassen gib bitte '/exit' ein!.
+
+         OVERVIEW: Zeigt alle vorhnadenen Wörter.
+
+         EXIT: Beendet das Programm.
+
          HELP: Zeigt die Hilfe an.
-              
+
          """)
 
     def waiting_for_command(self):
@@ -110,10 +98,10 @@ class Hangman:
                     score +=1
                     if score >= self.highscore:
                         self.highscore = score
-                        with open('highscore.json') as f:
+                        with open(f'{path}\\highscore.json') as f:
                             data = json.load(f)
                         data["highscore"] = self.highscore
-                        with open('highscore.json', 'w') as outfile:
+                        with open(f'{path}\\highscore.json', 'w') as outfile:
                             json.dump(data, outfile)
                         print("SUPER! Du hast deinen Highscore geknackt! Highscore: {}".format(self.highscore))
                     break
@@ -143,10 +131,10 @@ class Hangman:
                     score =score+1
                     if score >= self.highscore:
                         self.highscore = score
-                        with open('highscore.json') as f:
+                        with open(f'{path}\\highscore.json') as f:
                             data = json.load(f)
                         data["highscore"] = self.highscore
-                        with open('highscore.json', 'w') as outfile:
+                        with open(f'{path}\\highscore.json', 'w') as outfile:
                             json.dump(data, outfile)
 
                         print("SUPER! Du hast deinen Highscore geknackt! Highscore: {}".format(self.highscore))
@@ -206,10 +194,10 @@ class Hangman:
             print(Fehler.elf)
         elif misstake == 0:
             print("""
-            
-            
-            
-            
+
+
+
+
             """)
 
     def clear_terminal(self):
@@ -218,4 +206,3 @@ class Hangman:
 
 if __name__ == "__main__":
     Hangman()
-

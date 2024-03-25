@@ -1,3 +1,6 @@
+import os
+
+path = os.path.dirname(os.path.realpath(__file__))
 
 class Words:
     def __init__(self, main):
@@ -6,7 +9,7 @@ class Words:
         self.main = main
 
     def add(self, word):
-        with open("words.txt", "a") as file:
+        with open(f"{path}\\words.txt", "a") as file:
 
             file.write("{}\n".format(word.replace(" ","")))
             file.close()
@@ -80,6 +83,6 @@ class Words:
                 continue
 
     def update(self):
-        with open("words.txt", "w") as file:
+        with open(f"{path}\\words.txt", "w") as file:
             for i in self.words:
                 file.write("{}\n".format(i.replace(" ", "")))
