@@ -1,11 +1,10 @@
 import json
 import mistake
-import keyboard
 import os
 import random
-import sys
-import time
 from words import Words
+import errors
+import output_german
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -15,44 +14,17 @@ class Hangman:
         self.Add = Words(self)
         self.words = self.Add.words
         self.highscore = json.loads(open(f"{path}\\highscore.json").read())['highscore']
-        self.main_menu()
+        #self.main_menu()
         self.waiting_for_command()
 
 
     def print_help(self):
-        print("""HILFE FÜR USER:
-         - um zu beenden: 'exit'
-         - für die Hilfe: 'help'
-         - um Wörter hinzuzufügen: 'add'
-         - um zu spielen: 'play'
-         - Wörter bearbeiten: 'edit'
-
-         PLAY: Man hat 11 Versuche. Bitte gib das Wort oder einzelne oder Wortgruppen Buchstaben ein.
-         Eingaben werden in Großbuch umgewandelt!
-         um den Spielmodus zu beenden :'/exit'
-
-         ADD: Modus um Wörter hinzuzufügen.
-         Wörter werden automatisch in Wörter, verwandelt bei denen alle Buchstaben groß geschrieben sind!
-         Hinzufügenmodus beenden mit: '/exit'.
-
-         EDIT: Gib die Nummer des Wortes ein welches du bearbeiten möchtest.
-         Die Wörter, welche zur Auwahl stehen werden dir angezeigt.
-         Gib nun das korigierte Wort ein. Bestätige nun deine Eingabe mit einem Ja!
-         Um den Bearbeitungsmodus zu verlassen gib bitte '/exit' ein!.
-
-         OVERVIEW: Zeigt alle vorhnadenen Wörter.
-
-         EXIT: Beendet das Programm.
-
-         HELP: Zeigt die Hilfe an.
-
-         """)
+        print(output_german.PRINT_HELP_helpForUser)
 
     def waiting_for_command(self):
         while True:
-            print("Für die Hilfe: 'help'")
-            print("Zum beenden: 'exit'")
-            entry = input("Bitte gib einen Befehl ein! \n >>> ")
+            print(output_german.WAITING_FOR_COMMAND_shortHelp)
+            entry = input(output_german.WAITING_FOR_COMMAND_entry)
 
             if entry == "play":
                 self.play()
@@ -71,7 +43,7 @@ class Hangman:
                 for i in range(len(self.words)):
                     print("{}. {}".format(i+1, self.words[i]))
             else:
-                print("FEHLER: Eingabe ungültig!\n Für die Hilfe gib bitte 'help' ein !")
+                print(output_german.WAITING_FOR_COMMAND_error)
 
     def play(self):
         run= True
@@ -79,22 +51,23 @@ class Hangman:
         while run:
             wordnumber = random.randint(0, len(self.words)-1)
             word = self.words[wordnumber]
-            geraten = []
-            Fehler = 0
+            guessedCharsAndWords = []
             self.clear_terminal()
+            Fehler = 0
             while True:
 
                 unknown= 0
-                for letter in word:
-                    if letter in geraten:
+                for letter in word: # WATCHING HOW MANY LETTER ARE UNDEFINED
+                    if letter in guessedCharsAndWords:
                         print(letter, end="")
                     else:
                         print("_ ", end="")
                         unknown+=1
-                if unknown ==0:
+
+                if unknown == 0:
                     print()
                     print()
-                    print("GEWONNEN")
+                    print(output_german.PLAY_guessWordRight.format(word))
                     score +=1
                     if score >= self.highscore:
                         self.highscore = score
@@ -103,68 +76,67 @@ class Hangman:
                         data["highscore"] = self.highscore
                         with open(f'{path}\\highscore.json', 'w') as outfile:
                             json.dump(data, outfile)
-                        print("SUPER! Du hast deinen Highscore geknackt! Highscore: {}".format(self.highscore))
+                        print(output_german.PLAY_brokenHighscore.format(self.highscore))
                     break
 
                 print()
-                entry = input("Bitte gib einen Buchstaben oder das Wort ein. Zu Abbrechen '/exit'! Hilfe: '/help'  Score: '/score' Highscore: '/highscore' \n").upper().replace("AE","Ä").replace("OE","Ö").replace("UE","Ü")
+
+                entry = input(output_german.PLAY_entry).upper().replace("AE","Ä").replace("OE","Ö").replace("UE","Ü")
+
+                # IF ENTRY = COMMAND
                 if entry.startswith("/EXIT"):
                     self.clear_terminal()
                     run = False
                     break
+
                 elif entry.startswith("/HELP"):
                     self.print_help()
                     continue
+
                 elif entry == "\n":
                     continue
+
                 elif entry.startswith("/SCORE"):
-                    print("DU hast gerade {} Punkte.".format(score))
+                    print(output_german.PLAY_pointsNow.format(score))
                     continue
 
                 elif entry.startswith("/HIGHSCORE"):
-                    print("Dein Highscore beträgt gerade {} Punkte!".format(self.highscore))
+                    print(output_german.PLAY_highscoreNow.format(self.highscore))
                     continue
 
+                # PLAY GUESS THE WHOLE WORD RIGHT
                 elif entry == word:
-                    print("Prima! Du hast gewonnen!")
-                    print("Das Wort war: {}".format(word))
-                    score =score+1
-                    if score >= self.highscore:
-                        self.highscore = score
-                        with open(f'{path}\\highscore.json') as f:
-                            data = json.load(f)
-                        data["highscore"] = self.highscore
-                        with open(f'{path}\\highscore.json', 'w') as outfile:
-                            json.dump(data, outfile)
-
-                        print("SUPER! Du hast deinen Highscore geknackt! Highscore: {}".format(self.highscore))
-
-                    break
-                elif entry in geraten:
-                    print("Eingabe schon vorhanden!")
-                    continue
-                geraten.append(entry)
-                if not word.find(entry) == -1:
-                    always_exists = 0
-                    for letter in entry:
-                        if letter in geraten:
-                            always_exists += 1
+                    # WILL BE CHECKED AHEAD
+                    for letter in word:
+                        if letter in guessedCharsAndWords:
                             continue
-                        else:
-                            geraten.append(letter)
+                        guessedCharsAndWords.append(letter)
+                    continue
 
-                    if always_exists >= len(entry):
-                        print("Eingabe schon vorhanden")
-                    else:
-                        print("Super")
+                # PLAY GUESS LETTER THE SAME LETTER OR WORD TWICE
+                elif entry in guessedCharsAndWords:
+                    print(output_german.PLAY_entryAlwaysExists)
+                    continue
+                # APPEND LETTER
+                guessedCharsAndWords.append(entry)
+
+                if not word.find(entry) == -1:
+                    already_exists = 0
+                    for letter in entry:
+                        if letter in guessedCharsAndWords:
+                            already_exists += 1
+                            continue
+                        guessedCharsAndWords.append(letter)
+
+                    if already_exists >= len(entry):
+                        print(output_german.PLAY_entryAlwaysExists)
+                    print(output_german.PLAY_guessLetterRight)
                 else:
-                    print("Leider Falsch!")
+                    print(output_german.PLAY_guessLetterWrong)
                     Fehler+=1
                     self.print_mistake(Fehler)
                     if Fehler >= 11:
-                        print("GAME OVER")
-                        print("Du wurdest gehängt")
-                        print("Das Wort war: {}".format(word))
+                        print(output_german.PLAY_lose.format(word))
                         break
 
 
@@ -192,16 +164,11 @@ class Hangman:
             print(mistake.zehn)
         elif misstake == 11:
             print(mistake.elf)
-        elif misstake == 0:
-            print("""
-
-
-
-
-            """)
+        else:
+            raise errors.InvalidNumber()
 
     def clear_terminal(self):
-        os.system('cls' if os.name == 'nt' else 'clear')
+        pass
 
 
 if __name__ == "__main__":

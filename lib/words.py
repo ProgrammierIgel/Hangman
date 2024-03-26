@@ -17,7 +17,7 @@ class Words:
 
     def read(self):
         self.words = []
-        with open("words.txt", "r") as file:
+        with open(f"{path}\\words.txt", "r") as file:
 
             for line in file.readlines():
                 word = line.replace("\n", "").upper()
